@@ -56,6 +56,10 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		this.nacosServiceManager = nacosServiceManager;
 	}
 
+    /**
+     * 服务注册
+     * @param registration
+     */
 	@Override
 	public void register(Registration registration) {
 
@@ -65,9 +69,11 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 		}
 
 		NamingService namingService = namingService();
+        // 服务id
 		String serviceId = registration.getServiceId();
+        // 注册租
 		String group = nacosDiscoveryProperties.getGroup();
-
+        // 实例
 		Instance instance = getNacosInstanceFromRegistration(registration);
 
 		try {
@@ -177,13 +183,21 @@ public class NacosServiceRegistry implements ServiceRegistry<Registration> {
 	}
 
 	private Instance getNacosInstanceFromRegistration(Registration registration) {
+        // 定义注册实例
 		Instance instance = new Instance();
+        // 获取微服务的主机地址
 		instance.setIp(registration.getHost());
+        // 获取微服务的端口号
 		instance.setPort(registration.getPort());
+        // 获取权重
 		instance.setWeight(nacosDiscoveryProperties.getWeight());
+        // 获取集群名称
 		instance.setClusterName(nacosDiscoveryProperties.getClusterName());
+        // 实例已启用以接受请求。默认值为true。
 		instance.setEnabled(nacosDiscoveryProperties.isInstanceEnabled());
+        // 获取元数据
 		instance.setMetadata(registration.getMetadata());
+        // 瞬时实例
 		instance.setEphemeral(nacosDiscoveryProperties.isEphemeral());
 		return instance;
 	}

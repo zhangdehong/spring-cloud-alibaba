@@ -34,25 +34,31 @@ public class NacosConfigManager {
 
 	private static ConfigService service = null;
 
+    // nacos 的配置属性
 	private NacosConfigProperties nacosConfigProperties;
 
 	public NacosConfigManager(NacosConfigProperties nacosConfigProperties) {
 		this.nacosConfigProperties = nacosConfigProperties;
 		// Compatible with older code in NacosConfigProperties,It will be deleted in the
 		// future.
+        // nacos配置里面提供了nacos地址、领域模型、认证信息
 		createConfigService(nacosConfigProperties);
 	}
 
 	/**
 	 * Compatible with old design,It will be perfected in the future.
 	 */
+    // 直接返回Nacoslient接口实例
 	static ConfigService createConfigService(
 			NacosConfigProperties nacosConfigProperties) {
 		if (Objects.isNull(service)) {
+            // 创建过程同步处理 一个nacos客户端里面应该只有一个ConfigService实例 多个是没有任何意义的
 			synchronized (NacosConfigManager.class) {
 				try {
+                    // 饿汉式单例模式  双重锁检测机制
 					if (Objects.isNull(service)) {
 						service = NacosFactory.createConfigService(
+                                // nacos properties转换为properties
 								nacosConfigProperties.assembleConfigServiceProperties());
 					}
 				}
